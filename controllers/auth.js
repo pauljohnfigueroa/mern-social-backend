@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import User from '../models/User'
+import User from '../models/User.js'
 
-const register = async (req, res) => {
+export const register = async (req, res) => {
     try {
         const {
             firstName,
@@ -35,7 +35,36 @@ const register = async (req, res) => {
 
         const savedUser = newUser.save()
 
-        res.statuus(201).json(savedUser)
+        res.status(201).json(savedUser)
+
+    } catch (error) {
+        res.status(500).json({ errorMessage: error.message })
+    }
+}
+
+export const login = async (req, res) => {
+    try {
+        const { email, password } = req.body
+
+        // Check if the account/email exists in the database
+        const user = await User.findOne({ email })
+
+        // If the account/email does no exists in the database
+        if (!user) return res.status(400).json({ msg: 'Email does not exists.' })
+
+        // Now, check the password
+        const isPwdMatch = await bcrypt.compare(password, user.password)
+        if (!isPwdMatch) return res.status(400).json({ msg: 'Invalid credentials.' })
+
+        // do not send the password to the front end
+        // delete user.password // don't know why this is not working
+        user.password = undefined
+
+        // token
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET)
+
+        // send to frontend
+        res.status(200).json({ user, token })
 
     } catch (error) {
         res.status(500).json({ errorMessage: error.message })
