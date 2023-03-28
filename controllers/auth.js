@@ -33,12 +33,12 @@ export const register = async (req, res) => {
             impressions: Math.floor(Math.random() * 10000)
         })
 
-        const savedUser = newUser.save()
-
+        const savedUser = await newUser.save()
+        savedUser.password = undefined
         res.status(201).json(savedUser)
 
     } catch (error) {
-        res.status(500).json({ errorMessage: error.message })
+        res.status(500).json({ errorMsg: error.message })
     }
 }
 
@@ -59,14 +59,12 @@ export const login = async (req, res) => {
         // do not send the password to the front end
         // delete user.password // don't know why this is not working
         user.password = undefined
-
         // token
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET)
-
         // send to frontend
         res.status(200).json({ user, token })
 
     } catch (error) {
-        res.status(500).json({ errorMessage: error.message })
+        res.status(500).json({ errorMsg: error.message })
     }
 }
