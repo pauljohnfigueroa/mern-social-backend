@@ -4,6 +4,8 @@ import { verifyToken } from '../middleware/auth.js'
 
 const router = express.Router()
 
+/* Note: createPost() is placed in the index.js as it needs the multer upload*/
+
 /* Read Routes */
 router.get('/', verifyToken, getFeedPosts)
 router.get('/:userId/posts', verifyToken, getUserPosts)
