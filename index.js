@@ -9,6 +9,9 @@ import morgan from 'morgan'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
+import User from './models/User.js'
+import Post from './models/Post.js'
+
 import authRoutes from './routes/auth.js'
 import userRoutes from './routes/users.js'
 import postRoutes from './routes/posts.js'
@@ -16,6 +19,8 @@ import postRoutes from './routes/posts.js'
 import { register } from './controllers/auth.js'
 import { createPost } from './controllers/posts.js'
 import { verifyToken } from './middleware/auth.js'
+
+import { users, posts } from './data/fakedata.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -64,4 +69,10 @@ mongoose.connect(process.env.MONGO_URI, {
 }).then(() => {
     console.log('Connected to the Database.')
     app.listen(PORT, () => { console.log(`Server Listening on PORT ${PORT}`) })
+
+    // fake data
+    // run only once
+    // User.insertMany(users)
+    // Post.insertMany(posts)
+
 }).catch((error) => { console.log(`${error}. Can not connect.`) })
