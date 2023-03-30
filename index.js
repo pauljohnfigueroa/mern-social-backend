@@ -65,6 +65,7 @@ app.post('/posts', verifyToken, upload.single('picture'), createPost)
 /* Routes */
 app.use('/auth', authRoutes)
 app.use('/users', userRoutes)
+app.use('/posts', postRoutes)
 
 /* Database */
 const PORT = process.env.PORT || 4001
